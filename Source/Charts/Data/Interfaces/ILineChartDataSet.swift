@@ -30,11 +30,19 @@ public protocol ILineChartDataSet: ILineRadarChartDataSet
     /// **default**: 0.2
     var cubicIntensity: CGFloat { get set }
     
-    /// The radius of the drawn circles.
-    var circleRadius: CGFloat { get set }
+    /// The radius array of the drawn circles.
+    var circlesRadius: [CGFloat]  { get set }
     
-    /// The hole radius of the drawn circles.
-    var circleHoleRadius: CGFloat { get set }
+    /// - returns: The radius at the given index of the DataSet's circlesRadius array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    func getCirclesRadius(atIndex index: Int) -> CGFloat
+    
+    /// The holes radius array of the drawn circles
+    var circlesHoleRadius: [CGFloat] { get set }
+    
+    /// - returns: The radius at the given index of the DataSet's circlesHoleRadius array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    func getCirclesHoleRadius(atIndex index: Int) -> CGFloat
     
     var circleColors: [NSUIColor] { get set }
     
@@ -49,14 +57,24 @@ public protocol ILineChartDataSet: ILineRadarChartDataSet
     /// Resets the circle-colors array and creates a new one
     func resetCircleColors(_ index: Int)
     
+    var circleHoleColors: [NSUIColor] { get set }
+    
+    /// - returns: The color at the given index of the DataSet's circleHole-color array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    func getCircleHoleColor(atIndex: Int) -> NSUIColor?
+    
+    /// Sets the one and ONLY holeColor that should be used for this DataSet.
+    /// Internally, this recreates the holecolors array and adds the specified color.
+    func setCircleHoleColor(_ color: NSUIColor)
+    
+    /// Resets the circleHole-colors array and creates a new one
+    func resetCircleHoleColors(_ index: Int)
+    
     /// If true, drawing circles is enabled
     var drawCirclesEnabled: Bool { get set }
     
     /// - returns: `true` if drawing circles for this DataSet is enabled, `false` ifnot
     var isDrawCirclesEnabled: Bool { get }
-    
-    /// The color of the inner circle (the circle-hole).
-    var circleHoleColor: NSUIColor? { get set }
     
     /// `true` if drawing circles for this DataSet is enabled, `false` ifnot
     var drawCircleHoleEnabled: Bool { get set }

@@ -66,6 +66,9 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
     /// if true, units are drawn next to the values in the chart
     internal var _drawUnitInChart = false
     
+    /// if true, draw the projection of selected point
+    internal var _isNeedToDrawProjection = false
+    
     /// The object representing the labels on the x-axis
     internal var _xAxis: XAxis!
     
@@ -367,12 +370,6 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
             attributes: attrs)
     }
     
-    // MARK: - Accessibility
-
-    open override func accessibilityChildren() -> [Any]? {
-        return renderer?.accessibleChartElements
-    }
-
     // MARK: - Highlighting
     
     /// - returns: The array of currently highlighted values. This might an empty if nothing is highlighted.
@@ -510,6 +507,10 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
             if entry == nil
             {
                 h = nil
+                _indicesToHighlight.removeAll(keepingCapacity: false)
+            }
+            else if !_isNeedToDrawProjection
+            {
                 _indicesToHighlight.removeAll(keepingCapacity: false)
             }
             else

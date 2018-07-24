@@ -64,15 +64,49 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         }
         set
         {
-            _cubicIntensity = newValue.clamped(to: 0.05...1)
+            _cubicIntensity = newValue
+            if _cubicIntensity > 1.0
+            {
+                _cubicIntensity = 1.0
+            }
+            if _cubicIntensity < 0.05
+            {
+                _cubicIntensity = 0.05
+            }
         }
     }
         
-    /// The radius of the drawn circles.
-    open var circleRadius = CGFloat(8.0)
+    /// The radius array of the drawn circles.
+    open var circlesRadius = [CGFloat]()
     
-    /// The hole radius of the drawn circles
-    open var circleHoleRadius = CGFloat(4.0)
+    /// - returns: The radius at the given index of the DataSet's circlesRadius array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    open func getCirclesRadius(atIndex index: Int) -> CGFloat
+    {
+        let size = circlesRadius.count
+        let index = index % size
+        if index >= size
+        {
+            return 0
+        }
+        return circlesRadius[index]
+    }
+    
+    /// The holes radius array of the drawn circles
+    open var circlesHoleRadius = [CGFloat]()
+    
+    /// - returns: The radius at the given index of the DataSet's circlesHoleRadius array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    open func getCirclesHoleRadius(atIndex index: Int) -> CGFloat
+    {
+        let size = circlesHoleRadius.count
+        let index = index % size
+        if index >= size
+        {
+            return 0
+        }
+        return circlesHoleRadius[index]
+    }
     
     open var circleColors = [NSUIColor]()
     
@@ -109,14 +143,46 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         circleColors.removeAll(keepingCapacity: false)
     }
     
+    open var circleHoleColors = [NSUIColor]()
+    
+    /// - returns: The color at the given index of the DataSet's circleHole-color array.
+    /// Performs a IndexOutOfBounds check by modulus.
+    open func getCircleHoleColor(atIndex index: Int) -> NSUIColor?
+    {
+        let size = circleColors.count
+        let index = index % size
+        if index >= size
+        {
+            return nil
+        }
+        return circleHoleColors[index]
+    }
+    
+    /// Sets the one and ONLY holeColor that should be used for this DataSet.
+    /// Internally, this recreates the holeColors array and adds the specified color.
+    open func setCircleHoleColor(_ color: NSUIColor)
+    {
+        circleHoleColors.removeAll(keepingCapacity: false)
+        circleHoleColors.append(color)
+    }
+    
+    open func setCircleHoleColors(_ colors: NSUIColor...)
+    {
+        circleHoleColors.removeAll(keepingCapacity: false)
+        circleHoleColors.append(contentsOf: colors)
+    }
+    
+    /// Resets the circleHole-colors array and creates a new one
+    open func resetCircleHoleColors(_ index: Int)
+    {
+        circleHoleColors.removeAll(keepingCapacity: false)
+    }
+    
     /// If true, drawing circles is enabled
     open var drawCirclesEnabled = true
     
     /// - returns: `true` if drawing circles for this DataSet is enabled, `false` ifnot
     open var isDrawCirclesEnabled: Bool { return drawCirclesEnabled }
-    
-    /// The color of the inner circle (the circle-hole).
-    open var circleHoleColor: NSUIColor? = NSUIColor.white
     
     /// `true` if drawing circles for this DataSet is enabled, `false` ifnot
     open var drawCircleHoleEnabled = true
@@ -157,7 +223,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     {
         let copy = super.copyWithZone(zone) as! LineChartDataSet
         copy.circleColors = circleColors
-        copy.circleRadius = circleRadius
+        copy.circlesRadius = circlesRadius
         copy.cubicIntensity = cubicIntensity
         copy.lineDashPhase = lineDashPhase
         copy.lineDashLengths = lineDashLengths
