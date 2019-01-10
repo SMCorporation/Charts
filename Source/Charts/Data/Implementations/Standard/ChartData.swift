@@ -404,13 +404,16 @@ open class ChartData: NSObject
     /// - returns: The entry that is highlighted
     @objc open func entryForHighlight(_ highlight: Highlight) -> ChartDataEntry?
     {
-        if highlight.dataSetIndex >= dataSets.count
-        {
+        if highlight.dataSetIndex >= dataSets.count {
             return nil
-        }
-        else
-        {
-            return dataSets[highlight.dataSetIndex].entryForXValue(highlight.x, closestToY: highlight.y)
+        } else {
+            //MARK: Remove first and last point from highlight
+            let dataSet = dataSets[highlight.dataSetIndex]
+            let entryForHighlight = dataSet.entryForXValue(highlight.x, closestToY: highlight.y)
+            if entryForHighlight == dataSet.entryForIndex(0) || entryForHighlight == dataSet.entryForIndex(dataSet.entryCount - 1) || entryForHighlight == dataSet.entryForIndex(dataSet.entryCount - 2) {
+                return nil
+            }
+            return entryForHighlight
         }
     }
     

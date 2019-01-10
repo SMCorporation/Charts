@@ -409,12 +409,9 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         // set the indices to highlight
         _indicesToHighlight = highs ?? [Highlight]()
         
-        if _indicesToHighlight.isEmpty
-        {
+        if _indicesToHighlight.isEmpty {
             self.lastHighlighted = nil
-        }
-        else
-        {
+        } else {
             self.lastHighlighted = _indicesToHighlight[0]
         }
 
@@ -495,26 +492,17 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         var entry: ChartDataEntry?
         var h = highlight
         
-        if h == nil
-        {
+        if h == nil {
             self.lastHighlighted = nil
             _indicesToHighlight.removeAll(keepingCapacity: false)
-        }
-        else
-        {
+        }  else {
             // set the indices to highlight
             entry = _data?.entryForHighlight(h!)
-            if entry == nil
-            {
+            
+            if entry == nil {
                 h = nil
                 _indicesToHighlight.removeAll(keepingCapacity: false)
-            }
-            else if !_isNeedToDrawProjection
-            {
-                _indicesToHighlight.removeAll(keepingCapacity: false)
-            }
-            else
-            {
+            } else {
                 _indicesToHighlight = [h!]
             }
         }
